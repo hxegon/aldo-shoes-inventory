@@ -6,8 +6,13 @@ source "https://rubygems.org"
 gem "dry-monads"
 
 group :development do
+  gem 'rake'
+
   gem "pry"
+  gem "pry-reload"
+
   gem "solargraph"
+
   gem "yard"
 end
 
