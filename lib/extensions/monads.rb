@@ -21,7 +21,7 @@ module Ext
         bind do |v|
           Dry::Monads::Try[*exceptions] { run.call(v) }
             .to_result
-            .or { |e| Dry::Monads::Result::Failure.call(catchfn ? catchfn.call(e, v) : e) }
+            .or { |e| Dry::Monads::Result::Failure.call(catchfn ? catchfn.call(v) : e) }
         end
       end
     end

@@ -71,8 +71,8 @@ describe Dry::Monads::Result do
                 .try(
                   [NoMethodError],
                   ->(_v) { raise NoMethodError }
-                ) { |e, v| [e.class, v] }
-      expect(errored.failure).to eq [NoMethodError, 1]
+                ) { |v| v }
+      expect(errored.failure).to eq 1
     end
   end
 end
