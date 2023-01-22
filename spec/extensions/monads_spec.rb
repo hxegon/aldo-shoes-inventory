@@ -47,32 +47,29 @@ describe Dry::Monads::Result do
       @f       = @failure.call(:original_failure)
     end
 
-    it '== fmap for Failures' do
-      expect(
-        @f.try([NoMethodError], ->(_fv) { raise NoMethodError })
-      ).to eq @f
+    context 'with no block errors' do
+      it '== fmap' do
+        expect(@s.try([NoMethodError], ->(v) { v }))
+          .to eq @success.call(:original_success)
+      end
     end
 
-    it "== fmap when there's no error" do
-      expect(@s.try([NoMethodError], ->(v) { v }))
-        .to eq @success.call(:original_success)
-    end
+    context 'with block error' do
+      it '== fmap for Failures' do
+        expect(
+          @f.try([NoMethodError], ->(_fv) { raise NoMethodError })
+        ).to eq @f
+      end
 
-    it 'catches errors' do
-      errored = @s.try([NoMethodError], ->(_sv) { raise NoMethodError })
+      it 'and success(x), returns failure(x)' do
+        errored = @s.try(
+          [NoMethodError],
+          ->(_sv) { raise NoMethodError }
+        )
 
-      expect(errored.failure?)
-      expect(errored.failure.class).to eq NoMethodError
-    end
-
-    it 'uses block return for failure value' do
-      errored =
-        @success.call(1)
-                .try(
-                  [NoMethodError],
-                  ->(_v) { raise NoMethodError }
-                ) { |v| v }
-      expect(errored.failure).to eq 1
+        expect(errored.failure?)
+        expect(errored.failure).to eq :original_success
+      end
     end
   end
 end
