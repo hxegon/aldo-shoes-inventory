@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-# gem 'dry-cli'
-gem "dry-monads"
+gem 'rake'
 
-group :development do
-  gem 'rake'
+gem 'dry-monads'
 
-  gem "pry"
-  gem "pry-reload"
-
-  gem "solargraph"
-
-  gem "yard"
+group :inv_consumer do
+  gem 'eventmachine'
+  gem 'faye-websocket'
 end
 
+group :inv_app do
+end
+
+# group :development do
+# end
+
 group :test, :development do
-  gem "rspec"
+  gem 'rspec'
 end
