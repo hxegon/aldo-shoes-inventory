@@ -26,7 +26,7 @@ module Inventory
     end
 
     def to_h
-      { update_id: @id, model: @model, inventory: @inventory, store: @store }
+      { update_id: id, model: @model, inventory: @inventory, store: @store }
     end
     alias to_hash to_h
 

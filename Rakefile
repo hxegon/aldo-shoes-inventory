@@ -1,4 +1,7 @@
+# require 'bundler'
+
 require 'bundler/setup'
+
 $:.unshift File.expand_path('lib', __dir__)
 
 # rake spec
@@ -7,8 +10,14 @@ RSpec::Core::RakeTask.new(:spec) { |t| t.verbose = false }
 
 # rake console
 task :console do
-  require 'pry'
-  require 'pry-reload'
   ARGV.clear
   Pry.start
+end
+
+namespace 'inv_consumer' do
+  desc 'Start the inv_consumer server'
+  task :start do
+    puts 'Starting inv_consumer'
+    exec('ruby inv_consumer/app.rb')
+  end
 end
