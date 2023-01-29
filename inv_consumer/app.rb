@@ -10,16 +10,21 @@ require 'eventmachine'
 
 require 'inventory/update'
 
-inventory_writer = Ractor.new name: 'MessageConsumer' do
-  puts 'starting inventory_writer'
+# Foreman has issues with batching output if this isn't set
+# See: https://github.com/ddollar/foreman/issues/450
+$stdout.sync = true
 
-  while true
-    update = Ractor.receive
-    puts "valid update: #{update.to_h}"
-  end
-end
+# TODO: Replace with eventmachine deferables?
+# puts 'STARTING inventory_writer'
+# inventory_writer = Ractor.new name: 'MessageConsumer' do
+#   puts 'STARTED inventory_writer'
 
-# module Inventory::SocketHandler
+#   while true
+#     puts 'message recieved'
+#     update = Ractor.receive
+#     puts "valid update: #{update.to_h}"
+#   end
+# end
 
 puts 'starting server'
 EM.run do
@@ -34,7 +39,7 @@ EM.run do
     puts 'connection closed'
   end
 
-  # messages should be json compatible strings
+  # messages should be json strings
   socket.on :message do |event|
     msg = event.data
 
@@ -53,7 +58,8 @@ EM.run do
       Inventory::Update.coerce_(hash)
     end
       .either(
-        ->(invupdate) { inventory_writer.send(invupdate) },
+        # ->(invupdate) { inventory_writer.send(invupdate) },
+        ->(invupdate) { puts "update recieved: #{invupdate.to_h}" },
         lambda { |errors|
           Array(errors).each do |e|
             puts "Error! message #{msg} had issues: #{e}"
