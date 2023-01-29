@@ -2,21 +2,18 @@
 
 source 'https://rubygems.org'
 
+gem 'dry-monads'
 gem 'rake'
 
-gem 'dry-monads'
+group :test, :development do
+  gem 'dotenv'
+  gem 'rspec'
+end
 
 group :inv_consumer do
   gem 'eventmachine'
   gem 'faye-websocket'
 end
 
-group :inv_app do
-end
-
-# group :development do
+# group :inv_app do
 # end
-
-group :test, :development do
-  gem 'rspec'
-end
