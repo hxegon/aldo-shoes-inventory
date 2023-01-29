@@ -1,11 +1,11 @@
 # coercable_spec.rb
 
-require 'invlib/monadic/coercable'
+require 'invlib/monadic/coercible'
 require 'dry/monads'
 
 include Dry::Monads[:result]
 
-describe InvLib::Monadic::Coercable do
+describe InvLib::Monadic::Coercible do
   describe '#coerce_' do
     # actually, this should be found at dev time, not runtime
     # it 'raises error for non-procable things' do
@@ -14,7 +14,7 @@ describe InvLib::Monadic::Coercable do
     before do
       @coerce =
         Class.new do
-          extend InvLib::Monadic::Coercable
+          extend InvLib::Monadic::Coercible
 
           attr_reader :value
 

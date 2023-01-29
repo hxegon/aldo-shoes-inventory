@@ -1,10 +1,10 @@
-# invlib/monadic/coercable.rb
+# invlib/monadic/coercible.rb
 
 require 'dry/monads'
 
 module InvLib
   module Monadic
-    module Coercable
+    module Coercible
       extend Dry::Monads[:result, :try]
       VERSION = '0.0.1'
 

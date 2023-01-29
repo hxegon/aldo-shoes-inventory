@@ -2,14 +2,14 @@
 # frozen_string_literal: true
 
 require 'dry/monads'
+require 'invlib/monadic/coercible'
 
-require 'invlib/monadic/coercable'
 module Inventory
   class Update
     extend Dry::Monads[:result, :try]
     include Dry::Monads[:result, :try]
 
-    extend InvLib::Monadic::Coercable
+    extend InvLib::Monadic::Coercible
 
     attr_reader :id, :store, :model, :inventory
 
