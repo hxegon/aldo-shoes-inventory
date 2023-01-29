@@ -4,7 +4,7 @@ require 'bundler'
 
 Bundler.require(:default, :inv_consumer)
 
-paths = ['../lib', 'app'].map { File.expand_path _1, __dir__ }
+paths = ['../../lib', '../lib', '../app'].map { File.expand_path _1, __dir__ }
 
 $LOAD_PATH.unshift(*paths)
 
