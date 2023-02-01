@@ -17,12 +17,11 @@ module Inventory
       @store     = store || opts[:store]
       @model     = model || opts[:model]
       @inventory = inventory || opts[:inventory]
-      @created   = Time.now.freeze
     end
 
     # Conversions
     def to_h
-      { created_at: @created, model: @model, inventory: @inventory, store: @store }
+      { model: @model, inventory: @inventory, store: @store }
     end
     alias to_hash to_h
 
