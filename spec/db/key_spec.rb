@@ -4,10 +4,10 @@ require 'db/key'
 
 describe DB::Key do
   before do
-    @key_hash = { store: 'santa barbara branch', model: 'nike air whatevers' }
+    @key_hash = { STORE: 'SANTA BARBARA BRANCH', model: 'nike air whatevers' }
     @key = DB::Key.new @key_hash
-    @keystrings = %w[STORE__SANTA_BARBARA_BRANCH___MODEL__NIKE_AIR_WHATEVERS
-                     MODEL__NIKE_AIR_WHATEVERS___STORE__SANTA_BARBARA_BRANCH]
+    @keystrings = %w[STORE__SANTA_BARBARA_BRANCH___model__nike_air_whatevers
+                     model__nike_air_whatevers___STORE__SANTA_BARBARA_BRANCH]
   end
 
   describe '#value_addresses' do
@@ -29,7 +29,6 @@ describe DB::Key do
     context 'has idempotent' do
       it 'value addresses' do
         @keystrings.each do |ks|
-          # String#casecmp
           parsed = described_class.parse ks
           expect(parsed.value_addresses).to include ks
         end

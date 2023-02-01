@@ -50,7 +50,7 @@ module DB
           .split(FIELD_SEPARATOR)
           .map { _1.split(PAIR_SEPARATOR) }
           .map do |field, value|
-            [_unnormalize_string(field).downcase.to_sym,
+            [_unnormalize_string(field).to_sym,
              _unnormalize_string(value)]
           end.to_h
 
@@ -64,11 +64,11 @@ module DB
       private
 
       def _normalize_string(k)
-        k.to_s.gsub(/\s+/, '_').upcase
+        k.to_s.gsub(/\s+/, '_')
       end
 
       def _unnormalize_string(s)
-        s.to_s.gsub(/_+/, ' ').downcase
+        s.to_s.gsub(/_+/, ' ')
       end
     end
 
