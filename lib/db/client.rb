@@ -19,7 +19,9 @@ module DB
     def where(**search_hash)
       raise ArgumentError, 'Can only search for one parameter at a time' unless search_hash.count == 1
 
-      @client.scan(prefix: DB::Key.partial_value_address(*search_hash.first))
+      @client
+        .scan(prefix: DB::Key.partial_value_address(*search_hash.first))
+        .each { |result| result[:key] = DB::Key.parse(result[:key]) }
     end
 
     def find(...)
