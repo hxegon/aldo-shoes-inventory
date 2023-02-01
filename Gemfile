@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'dry-monads'
+gem 'immudb'
 gem 'rake'
 
 group :test, :development do
