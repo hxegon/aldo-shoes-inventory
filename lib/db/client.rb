@@ -5,11 +5,11 @@ require 'immudb'
 require 'db/key'
 
 module DB
-  class Client # TODO: This should inherit from Immudb::Client
+  class Client
     # Don't leak key addresses
     # pass in :host, :port, :username, :password, :database, and :timeout
-    def initialize(client)
-      @client = client
+    def initialize(**config)
+      @client = Immudb::Client.new(**config)
     end
 
     # search for entries with a matching parameter
