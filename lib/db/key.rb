@@ -1,6 +1,10 @@
 # lib/db/key.rb
 
+require 'db/saveable'
+
 module DB
+  class KeyError; end
+
   class Key
     PAIR_SEPARATOR = '__'
     FIELD_SEPARATOR = '___'
@@ -25,11 +29,6 @@ module DB
         .map { |ks| ks.join(FIELD_SEPARATOR) }
     end
 
-    def to_h
-      @key_hash
-    end
-    alias to_hash to_h
-
     # address for key's transaction time
     # NOTE: immudb indexes revisions starting @ 1
     def txtime_addresses(revision_index)
@@ -38,6 +37,10 @@ module DB
 
     def txtime_address(revision_index)
       txtime_addresses(revision_index).first
+    end
+
+    def ==(other)
+      to_h == (other.respond_to?(:to_h) && other.to_h)
     end
 
     class << self
@@ -55,18 +58,35 @@ module DB
       end
 
       def partial_value_address(field_k, value_k)
-        [field_k, value_k].map { |e| _normalize_key(e) }.join(PAIR_SEPARATOR)
+        [field_k, value_k].map { |e| _normalize_string(e) }.join(PAIR_SEPARATOR)
       end
 
       private
 
-      def _normalize_key(k)
+      def _normalize_string(k)
         k.to_s.gsub(/\s+/, '_').upcase
       end
 
       def _unnormalize_string(s)
         s.to_s.gsub(/_+/, ' ').downcase
       end
+    end
+
+    # Conversions
+    def to_h
+      @key_hash
+    end
+
+    # Mixin Methods
+    include DB::Saveable
+
+    def to_dbkey
+      self
+    end
+
+    def to_dbval
+      # ???: Should this be a kind of DB::Saveable error?
+      raise KeyError, "Can't convert a DB::Key into a database value!"
     end
   end
 end

@@ -4,11 +4,8 @@ require 'immudb'
 
 require 'db/key'
 
-# TODO: IMPORTANT Should we assume we're getting DB::Key's already?
-# TODO: This should probably inherit from Immudb::Client
-
 module DB
-  class Client
+  class Client # TODO: This should inherit from Immudb::Client
     # Don't leak key addresses
     # pass in :host, :port, :username, :password, :database, and :timeout
     def initialize(client)
@@ -28,8 +25,7 @@ module DB
       where(...).first
     end
 
-    # Saves the key and value, and saves a transaction time
-    #
+    # Takes a DB::Saveable and persists it to immudb
     #
     # We can store transaction times in a key associated with the revision index
     # of the individual keys:
@@ -38,20 +34,26 @@ module DB
     # exposes this in one way, and that's through the number of items in the history of
     # a key. Unfortuanately this means we have to get the history of a key every time
     # we want to update it's value.
-    def save(key, val)
-      k = DB::Key.new(key)
+    def save(saveable)
+      set(saveable.to_dbkey, saveable.to_dbval)
+    end
 
+    # takes a #to_dbkey and a value, persists to db
+    def set(key, val)
       # save value to synonym addresses
-      k.value_addresses.each { |addr| @client.set(addr, val) }
+      key = key.to_dbkey
+      val = val.to_s
+      key.value_addresses.each { |addr| @client.set(addr, val) }
 
       # save transaction times to synonym addresses
       # NOTE:
       # Immudb does *not* include transaction time data in the k/v data by default.
-      # This negates a lot of the advantages of bi-temporal DBs, so we're hacking them
-      # back in.
-      history = @client.history k.value_addresses.first
+      # This negates a lot of the advantages of bi-temporal DBs, and specifically
+      # what I need for historical inventory graphs, so I'm hacking them on to immudb.
+      history = @client.history key.value_addresses.first
       now     = Time.now.utc.to_s
-      k.txtime_addresses(history.count).each { |r_addr| @client.set(r_addr, now) }
+
+      key.txtime_addresses(history.count).each { |r_addr| @client.set(r_addr, now) }
     end
 
     # returns the field history in chronological order or nil if key isn't found
@@ -60,7 +62,7 @@ module DB
       v_addr = key.value_addresses.first
 
       # Return nil if no matching key instead of erroring
-      # TODO: extract to private
+      # TODO: extract
       begin
         history = @client.history(v_addr)
       rescue Immudb::Error

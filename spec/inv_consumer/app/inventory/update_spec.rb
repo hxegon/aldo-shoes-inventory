@@ -30,4 +30,24 @@ describe Inventory::Update do
       expect(actual).to be_failure
     end
   end
+
+  describe 'DB::Saveable' do
+    before do
+      @update = described_class.coerce_({ store: 'foo', model: 'bar', inventory: 10 }).value!
+    end
+
+    # Not expected to change, but more of a double check to ensure data consistency.
+
+    describe '#to_dbkey' do
+      it 'returns :store and :model slice' do
+        expect(@update.to_dbkey).to eq @update.to_h.slice(:store, :model)
+      end
+    end
+
+    describe '#to_dbval' do
+      it 'returns :inventory value' do
+        expect(@update.to_dbval).to eq @update.inventory
+      end
+    end
+  end
 end
