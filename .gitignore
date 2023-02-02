@@ -10,3 +10,8 @@ notes/
 vendor
 Gemfile.lock
 coverage
+
+# immudb
+/data
+.state-*
+.identity-*

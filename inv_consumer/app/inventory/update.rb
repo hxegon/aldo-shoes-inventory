@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 require 'dry/monads'
+require 'db/saveable'
+require 'db/key'
 require 'invlib/monadic/coercible'
 
 module Inventory
@@ -9,26 +11,32 @@ module Inventory
     extend Dry::Monads[:result, :try]
     include Dry::Monads[:result, :try]
 
-    extend InvLib::Monadic::Coercible
-
-    attr_reader :id, :store, :model, :inventory
+    attr_reader :store, :model, :inventory
 
     def initialize(opts = {}, store: nil, model: nil, inventory: nil)
-      # Ruby has deprecated using hashes as arguments to methods using kwargs, weird
       @store     = store || opts[:store]
       @model     = model || opts[:model]
       @inventory = inventory || opts[:inventory]
     end
 
-    # Doesn't do anything right now but planning on using it in the future
-    def id
-      @id ||= SecureRandom.hex(4)
-    end
-
+    # Conversions
     def to_h
-      { update_id: id, model: @model, inventory: @inventory, store: @store }
+      { model: @model, inventory: @inventory, store: @store }
     end
     alias to_hash to_h
+
+    # Mixin Methods
+    include DB::Saveable
+
+    def to_dbkey
+      DB::Key.new(to_h.slice(:model, :store))
+    end
+
+    def to_dbval
+      inventory
+    end
+
+    extend InvLib::Monadic::Coercible
 
     def self.coerce_(obj)
       super(
