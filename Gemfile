@@ -16,5 +16,7 @@ group :inv_consumer do
   gem 'faye-websocket'
 end
 
-# group :inv_app do
-# end
+group :inv_app do
+  gem 'puma'
+  gem 'sinatra'
+end
