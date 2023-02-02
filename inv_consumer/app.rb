@@ -10,21 +10,23 @@ require 'eventmachine'
 
 require 'inventory/update'
 
+require 'db/client'
+require 'db/inventory'
+
+db = DB::Client.new(
+  host: 'localhost',
+  port: 3322,
+  username: 'immudb',
+  password: 'Western:Green:89',
+  database: 'testdb',
+  timeout: nil
+)
+
+inventory = DB::Inventory.new db
+
 # Foreman has issues with batching output if this isn't set
 # See: https://github.com/ddollar/foreman/issues/450
 $stdout.sync = true
-
-# TODO: Replace with eventmachine deferables?
-# puts 'STARTING inventory_writer'
-# inventory_writer = Ractor.new name: 'MessageConsumer' do
-#   puts 'STARTED inventory_writer'
-
-#   while true
-#     puts 'message recieved'
-#     update = Ractor.receive
-#     puts "valid update: #{update.to_h}"
-#   end
-# end
 
 puts 'starting server'
 EM.run do
@@ -39,7 +41,7 @@ EM.run do
     puts 'connection closed'
   end
 
-  # messages should be json strings
+  # messages should be json compatible strings
   socket.on :message do |event|
     msg = event.data
 
@@ -47,24 +49,24 @@ EM.run do
       .fmap { |json| Hash(json) }
       .to_result
       .alt_map do |err|
-      case err.class
-      when JSON::ParserError
-        "message isn't parsable as JSON"
-      when TypeError
-        "message isn't a json object"
+        case err.class
+        when JSON::ParserError
+          "message isn't parsable as JSON"
+        when TypeError
+          "message isn't a json object"
+        end
       end
-    end
       .bind do |hash|
-      Inventory::Update.coerce_(hash)
-    end
+        Inventory::Update.coerce_(hash)
+      end
       .either(
-        # ->(invupdate) { inventory_writer.send(invupdate) },
-        ->(invupdate) { puts "update recieved: #{invupdate.to_h}" },
-        lambda { |errors|
-          Array(errors).each do |e|
-            puts "Error! message #{msg} had issues: #{e}"
-          end
-        }
+        lambda do |invupdate|
+          puts "persisting message #{invupdate.to_h}"
+          inventory.update(invupdate)
+        end,
+        lambda do |errors|
+          Array(errors).each { |e| puts "Error! message #{msg} had issues: #{e}" }
+        end
       )
   end
 end
