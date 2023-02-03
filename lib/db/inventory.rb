@@ -16,18 +16,23 @@ module DB
 
     # TODO: Combine model/store methods
 
+    # TODO: models and store lists caches are never invalidated, so
+    # any new models or stores won't be listed.
+
     def all_models
-      @client
+      @models ||=
+        @client
         .where(model: '')
         .map { _1[:key].to_h[:model] }
         .uniq
     end
 
     def all_stores
+      @stores ||=
       @client
-        .where(store: '')
-        .map { _1[:key].to_h[:store] }
-        .uniq
+      .where(store: '')
+      .map { _1[:key].to_h[:store] }
+      .uniq
     end
 
     # { model_name => stock_level } associated with store
