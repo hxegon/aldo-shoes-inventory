@@ -1,1 +1,21 @@
-Hello World!
+<h2 class="text-center">Aldo Shoes Inventory Management</h2>
+
+<div class="flex-container">
+  <div>
+    <ul>
+    <li><h3 class="list-header">Models</h4></li>
+      <% models.each do |model| %>
+        <li><a href="/model/<%= model %>"><%= model %></a></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div>
+    <ul>
+    <li><h3 class="list-header">Stores</h4></li>
+      <% stores.each do |store| %>
+        <li><a href="/store/<%= store %>"><%= store %></a></li>
+      <% end %>
+    </ul>
+  </div>
+</div

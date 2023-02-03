@@ -1,4 +1,4 @@
-/* Shamelessly cribbed from https://perfectmotherfuckingwebsite.com/ */
+/* much was shamelessly cribbed from https://perfectmotherfuckingwebsite.com/ */
 /* which is licenced under CC0 */
 /* CC0: https://creativecommons.org/publicdomain/zero/1.0/ */
 
@@ -13,11 +13,17 @@ body {
   color: #444;
   text-align: justify;
 }
+
 h1,
 h2,
 h3 {
   line-height: 1.2;
 }
+
+ul {
+  list-style: none;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: #c9d1d9;
@@ -29,4 +35,18 @@ h3 {
   a:visited {
     color: #8e96f0;
   }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.list-header {
+  text-decoration: underline;
+  margin-bottom: 0.5em;
 }

@@ -89,7 +89,7 @@ module Charter
 end
 
 get '/' do
-  erb :index
+  erb :index, locals: { stores: inventory.all_stores, models: inventory.all_models }
 end
 
 # Store detail with total inventory history
