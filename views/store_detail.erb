@@ -1,0 +1,30 @@
+<h1><%= store %></h1>
+
+<%= line_chart store_total_history, points: false, xtitle: 'time', ytitle: 'total stock' %>
+
+<h3> Total inventory: <%= store_models.values.reduce(0, &:+) %></h3>
+
+<table style="width: 50%">
+    <caption>Inventory by Model</caption>
+    <thead>
+    <tr>
+        <th>Model</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% store_models.sort_by(&:last).reverse.each do |model, quantity| %>
+      <% color = case quantity
+      when 0..10 then 'red'
+      when 10..30 then 'yellow'
+      when 30..60 then 'lime'
+      when 30..60 then 'lime'
+      else 'green'
+      end %>
+      <tr style="color: <%= color %>">
+        <td><a href="/history?model=<%= model %>&store=<%= store %>"><%= model %></a></td>
+        <td><%= quantity %></td>
+      </tr>
+    <% end %>
+    </tbody>
+</table>

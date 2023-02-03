@@ -19,4 +19,5 @@ end
 group :inv_app do
   gem 'puma'
   gem 'sinatra'
+  gem 'chartkick'
 end
