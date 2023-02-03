@@ -1,0 +1,7 @@
+<h2>All <%= name %></h2>
+
+<ul>
+<% list.each do |item| %>
+  <li><a href="<%= detail_redirect.call(item) %>"><%= item %></a></li>
+<% end %>
+</ul>

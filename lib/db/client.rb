@@ -76,7 +76,7 @@ module DB
         }
       end
 
-      history.zip(txs).map { |v, tx| v.merge tx }
+      history.zip(txs).map { |v, tx| v.merge tx }.select { |h| h[:txtime] }
     end
 
     # returns key value or nil when no key is found
