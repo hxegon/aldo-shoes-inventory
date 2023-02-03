@@ -29,6 +29,10 @@ module DB
         .map { |ks| ks.join(FIELD_SEPARATOR) }
     end
 
+    def [](k)
+      to_h[k]
+    end
+
     # address for key's transaction time
     # NOTE: immudb indexes revisions starting @ 1
     def txtime_addresses(revision_index)
