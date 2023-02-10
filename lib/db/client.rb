@@ -64,7 +64,7 @@ module DB
       # Return nil if no matching key instead of erroring
       # TODO: extract
       begin
-        history = @client.history(v_addr)
+        history = @client.history(v_addr, limit: 1000)
       rescue Immudb::Error
         return nil
       end

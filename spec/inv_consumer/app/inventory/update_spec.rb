@@ -1,6 +1,6 @@
 # update_spec.rb
 
-require './inv_consumer/app/inventory/update'
+require './app/inventory/update'
 
 describe Inventory::Update do
   describe '#coerce_' do

@@ -3,6 +3,7 @@
 *.log
 tmp/
 notes/
+*.md
 
 # Ruby stuff
 .ruby-version
